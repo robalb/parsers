@@ -21,7 +21,7 @@
 %type <dval> exp
 
 %left '-' '+'
-%left '*' '/'
+%left '*' '/' '%'
 %left NEG          /* negation--unary minus */
 %right '^'         /* exponentiation        */
       
@@ -41,6 +41,7 @@ exp:     NUM                { $$ = $1; }
        | exp '-' exp        { $$ = $1 - $3; }
        | exp '*' exp        { $$ = $1 * $3; }
        | exp '/' exp        { $$ = $1 / $3; }
+       | exp '%' exp        { $$ = $1 % $3; }
        | '-' exp  %prec NEG { $$ = -$2; }
        | exp '^' exp        { $$ = Math.pow($1, $3); }
        | '(' exp ')'        { $$ = $2; }
