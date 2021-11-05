@@ -17,9 +17,11 @@
       
 %token NL          /* newline  */
 %token <dval> NUM  /* a number */
+%token LOG10       /* log10    */
 
 %type <dval> exp
 
+%left LOG10
 %left '-' '+'
 %left '*' '/' '%'
 %left NEG          /* negation--unary minus */
@@ -37,6 +39,7 @@ line:    NL      { if (interactive) System.out.print("Expression: "); }
        ;
       
 exp:     NUM                { $$ = $1; }
+       | LOG10 exp          { $$ = Math.log10($2); }
        | exp '+' exp        { $$ = $1 + $3; }
        | exp '-' exp        { $$ = $1 - $3; }
        | exp '*' exp        { $$ = $1 * $3; }

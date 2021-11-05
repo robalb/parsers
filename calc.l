@@ -23,6 +23,7 @@
 
 NUM = [0-9]+ ("." [0-9]+)?
 NL  = \n | \r | \r\n
+LOG10 = ("log10" | "LOG10")
 
 %%
 
@@ -38,6 +39,9 @@ NL  = \n | \r | \r\n
 
 /* newline */
 {NL}   { return Parser.NL; }
+
+/* log10 */
+{LOG10} {return Parser.LOG10; }
 
 /* float */
 {NUM}  { yyparser.yylval = new ParserVal(Double.parseDouble(yytext()));
