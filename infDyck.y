@@ -21,14 +21,32 @@ parens_square : OPEN_PAREN_SQUARE s CLOSE_PAREN_SQUARE
 exp     : parens
 	| parens_square
 
-exps    : exp SKIP { System.out.println("S: "+$2); }
+exps    : exp SKIP { skipHack("S: "); }
         | exp
 
-s       : SKIP { System.out.println("txt: "+$1); }
+s       : SKIP { skipHack("txt: "); }
         | exps
         | s exps
 
 %%
+
+void skipHack(String caller){
+ String t = yylval.sval;
+ String out = t;
+ //SKIP has two uppercase characters
+ if(t.length() >= 2 && Character.isUpperCase(t.charAt(0)) && Character.isUpperCase(t.charAt(1))){
+   out = t.substring(2);
+   //the uppercase characters are different
+   if(t.charAt(0) != t.charAt(1)){
+	caller= "Err:";
+   }
+   //SKIP starts with odd number of :
+   //TODO
+   //SKIP starts with an even number of :
+ }
+ System.out.println(caller + out);
+ }
+  
 
 void yyerror(String s)
 {

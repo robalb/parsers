@@ -24,7 +24,14 @@
                         return Parser.OPEN_PAREN_SQUARE; }
 "]"                   { yyparser.yylval = new ParserVal(""+yycharat(0));
                         return Parser.CLOSE_PAREN_SQUARE; }
-[a-z]+            { yyparser.yylval = new ParserVal(yytext());
+[:]*[a-z]+            { yyparser.yylval = new ParserVal(yytext());
+                        return Parser.SKIP; }
+/*
+(?:[A-Z]{2})?[a-z]+
+(?:[A-Z]{2} [:]+)?[a-z]+
+*/
+
+[A-Z][A-Z][a-z]+            { yyparser.yylval = new ParserVal(yytext());
                         return Parser.SKIP; }
 
 [^] {} /*butta il resto*/
