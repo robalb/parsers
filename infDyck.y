@@ -4,6 +4,8 @@
 
 %token OPEN_PAREN;
 %token CLOSE_PAREN;
+%token OPEN_PAREN_SQUARE;
+%token CLOSE_PAREN_SQUARE;
 %token <sval> SKIP;
 
 %start s
@@ -13,7 +15,11 @@
 parens  : OPEN_PAREN s CLOSE_PAREN
         | OPEN_PAREN CLOSE_PAREN
 
+parens_square : OPEN_PAREN_SQUARE s CLOSE_PAREN_SQUARE
+	      | OPEN_PAREN_SQUARE CLOSE_PAREN_SQUARE
+
 exp     : parens
+	| parens_square
 
 exps    : exp SKIP { System.out.println("S: "+$2); }
         | exp
