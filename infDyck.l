@@ -1,3 +1,14 @@
+/*
+Alberto Ventafridda 866135
+
+laboratorio 2
+https://elearning.unimib.it/pluginfile.php/1129108/mod_resource/content/6/Laboratorio2.pdf
+
+testato con
+- jflex-1.8.2
+- byaccj-1.15
+- jdk-17.0.1
+*/
 
 %%
 
@@ -24,14 +35,16 @@
                         return Parser.OPEN_PAREN_SQUARE; }
 "]"                   { yyparser.yylval = new ParserVal(""+yycharat(0));
                         return Parser.CLOSE_PAREN_SQUARE; }
-[:]*[a-z]+            { yyparser.yylval = new ParserVal(yytext());
-                        return Parser.SKIP; }
-/*
-(?:[A-Z]{2})?[a-z]+
-(?:[A-Z]{2} [:]+)?[a-z]+
-*/
+[a-z]+            { yyparser.yylval = new ParserVal(yytext());
+                        return Parser.SKIP_BODY; }
 
-[A-Z][A-Z][a-z]+            { yyparser.yylval = new ParserVal(yytext());
-                        return Parser.SKIP; }
+[A-Z]{2}            { yyparser.yylval = new ParserVal(yytext());
+                        return Parser.SKIP_HEAD_UPPERCASE; }
+
+:{2}+           { yyparser.yylval = new ParserVal(yytext());
+                        return Parser.SKIP_HEAD_COLUMN_EVEN; }
+
+:+           { yyparser.yylval = new ParserVal(yytext());
+                        return Parser.SKIP_HEAD_COLUMN_ODD; }
 
 [^] {} /*butta il resto*/
