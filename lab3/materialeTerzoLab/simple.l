@@ -19,7 +19,11 @@ ID=R[0-9]
 %%
 
 ":=" { return(Parser.ASSGNOP); }
+DUAL { return(Parser.DUAL); }
 {DIGIT}+ { yyparser.yylval = new ParserVal(Integer.parseInt(yytext()));return(Parser.NUMBER); }
+true { yyparser.yylval = new ParserVal(1);return(Parser.BOOL); }
+false { yyparser.yylval = new ParserVal(0);return(Parser.BOOL); }
+and { return(Parser.AND); }
 do { return(Parser.DO); }
 else { return(Parser.ELSE); }
 END { return(Parser.END); }

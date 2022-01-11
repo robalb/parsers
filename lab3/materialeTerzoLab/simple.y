@@ -6,11 +6,14 @@ TOKENS
 =========================================================================*/
 %start program
 %token <ival> NUMBER /* Simple integer */
+%token <ival> BOOL /* Boolean value */
 %token <ival> IDENTIFIER /* Simple identifier */
 %token <ival> IF WHILE /* For backpatching labels */
 %token SKIP THEN ELSE FI DO END DONE
 %token READ WRITE BEGIN
 %token ASSGNOP
+%token DUAL
+%token AND
 /*=========================================================================
 OPERATOR PRECEDENCE
 =========================================================================*/
@@ -30,21 +33,28 @@ commands : /* empty */
 | commands command ';' {mark_blank();}
 ;
 
-ifThen : IF exp { $1/*for_jmp_false*/ = reserve_loc();mark_blank(); }/*RISERVAxJdopoThen*/
-  THEN commands { $$ = $1; } /*restituisceIndRiservato*/
-;
-command : SKIP
-| READ  IDENTIFIER { gen_code( I.READ_INT,  -99 ); 
-                     gen_code( I.STORE,  $2 ); }
-| WRITE exp        { gen_code( I.WRITE_INT, -99  ); }
-| IDENTIFIER ASSGNOP exp { gen_code( I.STORE, $1 ); }
-| ifThen
-  ELSE { $1/*for_goto*/ += 1000*reserve_loc();mark_blank(); /*RISERVAperJdopoIF*/
+ifThenOptElse: ifThen {$1/*for_goto*/ += 1000*reserve_loc();mark_blank(); /*RISERVAperJdopoIF*/
+                back_patch( $1%1000/*for_jmp_false*/, /*DEFINISCEilJdopoThen*/
+                     I.JMP_FALSE, gen_label() );}
+  FI   { back_patch( (int)$1/1000/*for_goto*/, /*DEFINISCEilJdopoIF*/
+                    I.GOTO, gen_label() ); }
+  | ifThen ELSE { $1/*for_goto*/ += 1000*reserve_loc();mark_blank(); /*RISERVAperJdopoIF*/
          back_patch( $1%1000/*for_jmp_false*/, /*DEFINISCEilJdopoThen*/
                      I.JMP_FALSE, gen_label() ); }
    commands
   FI   { back_patch( (int)$1/1000/*for_goto*/, /*DEFINISCEilJdopoIF*/
                      I.GOTO, gen_label() ); }
+ifThen : IF exp { $1/*for_jmp_false*/ = reserve_loc();mark_blank(); }/*RISERVAxJdopoThen*/
+  THEN commands { $$ = $1; } /*restituisceIndRiservato*/
+;
+
+command : SKIP
+| READ  IDENTIFIER { gen_code( I.READ_INT,  -99 ); 
+                     gen_code( I.STORE,  $2 ); }
+| WRITE exp        { gen_code( I.WRITE_INT, -99  ); }
+| IDENTIFIER ASSGNOP exp { gen_code( I.STORE, $1 ); }
+| IDENTIFIER IDENTIFIER DUAL exp { gen_code( I.STORE, $1 ); gen_code(I.LD_VAR, $1); gen_code( I.STORE, $2 ); }
+| ifThenOptElse
 | WHILE { $1/*for_goto*//*quiSaltoVSquiScrivo*/ = 1000*gen_label(); }
    exp { $1/*for_jmp_false*/ += reserve_loc();mark_blank(); }
   DO
@@ -64,6 +74,12 @@ exp : NUMBER { gen_code( I.LD_INT, $1 ); }
 | exp '*' exp { gen_code( I.MULT, -99 ); }
 | exp '/' exp { gen_code( I.DIV/*.ordinal()*/, -99 ); }
 | '(' exp ')'
+| booleExp
+;
+
+booleExp : BOOL { gen_code( I.LD_INT, $1 ); }
+| booleExp AND booleExp { { gen_code( I.MULT, -99 ); }}
+| '(' booleExp ')'
 ;
 
 %%

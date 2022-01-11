@@ -15,6 +15,8 @@ BEGIN
     done;
 
     write R1; write R3;
+    R4 R5 DUAL R3;
+    write R4; write R5;
 
   else
     skip; // in questo caso non calcolo nulla, ma:
