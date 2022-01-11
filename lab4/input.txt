@@ -1,3 +1,13 @@
 some key:{
     a key1: aval1
+    a key2: ava.l3/as-a 
+} ;
+
+some key:{
+    a key1: aval1
+    a key2: ava.l3/as-a 
+};
+some key:{
+    a key1: aval1
+    a key2: ava.l3/as-a 
 } ;

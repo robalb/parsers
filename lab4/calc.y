@@ -12,30 +12,31 @@ testato con
 %{
   import java.io.*;
 %}
-      
+
 %start program
-%token NL          /* newline  */
+%token NL
 %token OPEN
 %token CLOSE
 %token COL
 %token SEMICOL
 %token <sval> STR
+%token <sval> KEY
 
 %%
 
+program: group
+|        group NL program
+|        NL
 
-program: STR COL OPEN NL
+group: KEY COL OPEN NL
+         {System.out.print("\n[" + $1 + "]\n");}
             details
-         CLOSE SEMICOL opt_nl
-         {System.out.print("\n[" + $1 + "]");}
-| NL
+         CLOSE SEMICOL
 
-
-details: STR COL STR NL
+details: /*empty*/ 
+|        KEY COL STR NL 
          {System.out.print($1 + "=" + $3 + "\n");}
-| NL
-
-opt_nl : /*empty */
+         details
 | NL
 
 %%
@@ -66,12 +67,9 @@ opt_nl : /*empty */
   }
 
 
-  static boolean interactive;
-
   public static void main(String args[]) throws IOException {
     System.out.println("pseudo-json to pseudo-toml converter");
     System.out.println("converter output:");
-
     Parser yyparser;
     if ( args.length > 0 ) {
       // parse a file
@@ -81,14 +79,7 @@ opt_nl : /*empty */
       // interactive mode
       System.out.println("[Quit with CTRL-D]");
       System.out.print("enter a configuration: ");
-      interactive = true;
 	    yyparser = new Parser(new InputStreamReader(System.in));
     }
-
     yyparser.yyparse();
-    
-    if (interactive) {
-      /* System.out.println();
-      System.out.println("Have a nice day"); */
-    }
   }

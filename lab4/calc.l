@@ -22,16 +22,15 @@ testato con
   }
 %}
 
-NL  = \n | \r | \r\n
-STR = [0-9a-zA-Z]+ (" " [0-9a-zA-Z]+ )*
+NL  = (\n | \r | \r\n)+
+KEY = [0-9a-zA-Z]+ (" " [0-9a-zA-Z]+ )*
+STR = [0-9a-zA-Z\./\-]+
 
 %%
 
-/* graphs */
+/* tokens */
 "{" { return Parser.OPEN; }
 "}" { return Parser.CLOSE; }
-
-/* column */
 ":" { return Parser.COL; }
 ";" { return Parser.SEMICOL; }
 
@@ -40,6 +39,7 @@ STR = [0-9a-zA-Z]+ (" " [0-9a-zA-Z]+ )*
 
 /* string values */
 {STR}  { yyparser.yylval = new ParserVal(yytext()); return Parser.STR; }
+{KEY}  { yyparser.yylval = new ParserVal(yytext()); return Parser.KEY; }
 
 /* whitespace */
 [ \t]+ { }
