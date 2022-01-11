@@ -1,0 +1,5 @@
+*.java
+*.class
+*.java~
+*.class~
+compilato.txt
