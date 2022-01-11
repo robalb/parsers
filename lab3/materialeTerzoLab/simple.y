@@ -1,3 +1,14 @@
+/*
+Alberto Ventafridda 866135
+
+laboratorio 3
+
+testato con
+- jflex-1.8.2
+- byaccj-1.15
+- jdk-17.0.1
+*/
+
 %{
   import java.io.*;
 %}
