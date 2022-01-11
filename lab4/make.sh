@@ -1,4 +1,5 @@
 #!/bin/bash
+#usage: ./make.sh convertiConfigurazione inputfile.txt
 
 yacc='../../bin/yacc.exe'
 jflex='../../bin/jflex-1.8.2/bin/jflex.bat'
